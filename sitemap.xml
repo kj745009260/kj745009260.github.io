@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://example.com/2021/03/12/js%E6%94%B6%E9%9B%86/</loc>
+    <loc>http://example.com/2021/03/12/javascript%E4%B8%AD%E7%9A%84call%E5%92%8Capply%E5%92%8Cbind/</loc>
     
     <lastmod>2021-03-12</lastmod>
     
@@ -263,13 +263,6 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/js/</loc>
-    <lastmod>2021-03-12</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/tags/linux%E5%91%BD%E4%BB%A4/</loc>
     <lastmod>2021-03-12</lastmod>
     <changefreq>daily</changefreq>
@@ -341,6 +334,13 @@
   
   <url>
     <loc>http://example.com/tags/%E9%97%AD%E5%8C%85/</loc>
+    <lastmod>2021-03-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/call%E5%92%8Capply%E5%92%8Cbind/</loc>
     <lastmod>2021-03-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
