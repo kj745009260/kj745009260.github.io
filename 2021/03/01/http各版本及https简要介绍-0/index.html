@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> http各版本及https简要介绍 · 前端Store</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="http各版本及https简要介绍 - J.K"><meta name="keywords"><meta name="author" content="J.K"><link rel="short icon" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/favicon.ico"><link rel="stylesheet" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="前端Store"><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="前端Store" type="application/atom+xml">
+</head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/logo.png"></a><ul id="nav_list" class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/categories/live/" target="_self" data-hover="生活" class="nav-list-link">生活</a></li><li class="nav-list-item"><a href="/categories/read/" target="_self" data-hover="读书" class="nav-list-link">读书</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div><div id="nav_btn" class="nav-btn"><span></span><span></span><span></span></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">http各版本及https简要介绍</h1><div class="post-info">2021-03-01<p class="visit"><i data-identity="2021/03/01/http各版本及https简要介绍-0/" class="article-timer"></i><span>次访问</span></p></div><div class="post-content"><h2 id="HTTP优化："><a href="#HTTP优化：" class="headerlink" title="HTTP优化："></a><strong>HTTP优化：</strong></h2><p>影响一个 HTTP 网络请求的因素主要有两个方面：带宽和延迟。</p>
+<p>随着网络基础建设的完善，带宽因素已经不需要再考虑，仅需要考虑的就是延迟。延迟主要受三个方面影响：浏览器阻塞（HOL blocking）, DNS查询（DNS Lookup）,建立连接（Initial connection）.</p>
+<h2 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a><strong>HTTP1.1</strong></h2><blockquote>
+<ul>
+<li>支持长连接。</li>
+<li>在HTTP1.0的基础上引入了更多的缓存控制策略。</li>
+<li>引入了请求范围设置，优化了带宽。</li>
+<li>在错误通知管理中新增了错误状态响应码。</li>
+<li>增加了Host头处理，可以传递主机名（hostname）。</li>
+</ul>
+</blockquote>
+<p>缺点: 传输内容是明文，不够安全</p>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a><strong>HTTPS</strong></h2><blockquote>
+<ul>
+<li>HTTPS运行在安全套接字协议(Secure Sockets Layer，SSL )或传输层安全协议（Transport Layer Security，TLS）之上，所有在TCP中传输的内容都需要经过加密。</li>
+<li>连接方式不同，HTTP的端口是80，HTTPS的端口是443.</li>
+<li>HTTPS可以有效防止运营商劫持。</li>
+</ul>
+</blockquote>
+<p>注: SSL运行在TCP之上</p>
+<h2 id="HTTP2-0（SPDY的升级版）"><a href="#HTTP2-0（SPDY的升级版）" class="headerlink" title="HTTP2.0（SPDY的升级版）"></a><strong>HTTP2.0（SPDY的升级版）</strong></h2><blockquote>
+<ul>
+<li>HTTP2.0支持明文传输，而HTTP 1.X强制使用SSL/TLS加密传输。</li>
+<li>和HTTP 1.x使用的header压缩方法不同。</li>
+<li>HTTP2.0 基于二进制格式进行解析，而HTTP 1.x基于文本格式进行解析。</li>
+<li>多路复用，HTTP1.1是多个请求串行化单线程处理，HTTP 2.0是并行执行，一个请求超时并不会影响其他请求。</li>
+</ul>
+</blockquote>
+<h3 id="HTTP2-0的多路复用提升了网页性能："><a href="#HTTP2-0的多路复用提升了网页性能：" class="headerlink" title="HTTP2.0的多路复用提升了网页性能："></a><strong>HTTP2.0的多路复用提升了网页性能：</strong></h3><blockquote>
+<ul>
+<li>在 HTTP1 中浏览器限制了同一个域名下的请求数量（Chrome下一般是六个），当在请求很多资源的时候，由于队头阻塞，当浏览器达到最大请求数量时，剩余的资源需等待当前的六个请求完成后才能发起请求。</li>
+<li>HTTP2 中引入了多路复用的技术，这个技术可以只通过一个 TCP连接就可以传输所有的请求数据。多路复用可以绕过浏览器限制同一个域名下的请求数量的问题，进而提高了网页的性能。</li>
+</ul>
+</blockquote>
+<p>注意: </p>
+<blockquote>
+<ul>
+<li>主流浏览器只支持基于TLS部署的HTTP2.0协议，所以要将网站升级为HTTP 2.0，就需要先升级为HTTPS。</li>
+<li>HTTP 2.0完全兼容HTTP 1.x,所以对于部署了HTTP 2.0的网站可以自动向下兼容HTTP 1.X.</li>
+</ul>
+</blockquote>
+<h2 id="HTTP-3-0-QUIC"><a href="#HTTP-3-0-QUIC" class="headerlink" title="HTTP 3.0 (QUIC)"></a><strong>HTTP 3.0 (QUIC)</strong></h2><p>QUIC (Quick UDP Internet Connections), 快速 UDP 互联网连接。</p>
+<p>QUIC是基于UDP协议的。</p>
+<p>两个主要特性：</p>
+<h3 id="1-线头阻塞-HOL-问题的解决更为彻底"><a href="#1-线头阻塞-HOL-问题的解决更为彻底" class="headerlink" title="1.线头阻塞(HOL)问题的解决更为彻底"></a><strong>1.线头阻塞(HOL)问题的解决更为彻底</strong></h3><blockquote>
+<p>基于TCP的HTTP/2，尽管从逻辑上来说，不同的流之间相互独立，不会相互影响，但在实际传输方面，数据还是要一帧一帧的发送和接收，一旦某一个流的数据有丢包，则同样会阻塞在它之后传输的流数据传输。而基于UDP的QUIC协议则可以更为彻底地解决这样的问题，让不同的流之间真正的实现相互独立传输，互不干扰。</p>
+</blockquote>
+<h3 id="2-切换网络时的连接保持"><a href="#2-切换网络时的连接保持" class="headerlink" title="2.切换网络时的连接保持"></a><strong>2.切换网络时的连接保持</strong></h3><blockquote>
+<p>当前移动端的应用环境，用户的网络可能会经常切换，比如从办公室或家里出门，WiFi断开，网络切换为3G或4G。基于TCP的协议，由于切换网络之后，IP会改变，因而之前的连接不可能继续保持。而基于UDP的QUIC协议，则可以内建与TCP中不同的连接标识方法，从而在网络完成切换之后，恢复之前与服务器的连接。</p>
+</blockquote>
+</div></article></div><div class="right-container"><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2021/03/03/%E6%B5%85%E8%B0%88%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/" title="浅谈小程序运行机制" class="prev">PREV</a><a href="/2021/02/26/express%E5%92%8Ckoa%E7%9A%84%E5%8C%BA%E5%88%AB/" title="express和koa的区别" class="next">NEXT</a></div><a href="#comment" class="comment-anchor"></a><div id="vcomments"></div><script>new Valine({
+    el: "#vcomments",
+    appId: "aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz",
+    appKey: "FdzS5SOPHdhYQoEUngQ8K2QW",
+    notify: false,
+    verify: false,
+    avatar: "robohash",
+    visitor: true,
+    placeholder: "随便说点什么～.～",
+});</script><div class="copyright"><p>© 2016 - 2021 <a target="_blank">J.K</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p><p> <span style="padding-right: 6px;">闽ICP备16007301号-2</span></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/jquery-1.8.2.min.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/articleCatalog.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>const valineAPI = (() => {
+try {
+    AV.init("aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz", "FdzS5SOPHdhYQoEUngQ8K2QW");
+} catch(error) {}
+const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+    query.equalTo("identity", identity);
+    query.find().then(results => {
+        resolve(results.length > 0);
+    }, error => reject(error));
+    })
+}
+
+const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+    let querys = [];
+    for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+    }
+    query = AV.Query.or.apply(null ,querys);
+    } else {
+    identity = identity || getRealPath();
+    query = new AV.Query("Timer");
+    query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+    query.find()
+    .then(results => resolve(results))
+    .catch(error => reject(error))
+    })
+}
+
+const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let Todo = AV.Object.extend('Timer');
+    let todo = new Todo();
+    todo.set("times", 1);
+    todo.set("identity", identity);
+    todo.save().then(res => resolve(true), error => reject(error));
+    })
+}
+
+const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let query = new AV.Query('Timer');
+    query.equalTo("identity", identity);
+    query.find().then(todos => {
+        todos.forEach(todo => {
+        todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+    }).then(todos => resolve(true), error => reject(error));
+    })
+}
+
+return {
+    isExist,
+    _get,
+    update,
+    create
+}
+})()
+
+const calcAndWriteTimes = () => {
+let isPost = true;
+
+let timerAllDOM = document.querySelectorAll(".article-timer");
+
+if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+    if(exist) {
+        return valineAPI.update(identity);
+    }
+    return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+}
+
+let timerDOMCache = {};
+
+for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+    timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+    timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+    };
+    }
+}
+
+let identities = Object.keys(timerDOMCache);
+valineAPI._get(identities).then(results => {
+    for(let result of results) {
+    let {identity, times} = result.attributes;
+    timerDOMCache[identity].times = times;
+    timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+    if(timerDOMCache[identity].times){
+        continue;
+    }
+    timerDOMCache[identity].dom.map(item => item.innerText = 1);
+    valineAPI.create(identity);
+    }
+}).catch(error => console.log(error.message))
+}
+
+if(true){
+calcAndWriteTimes();
+}</script></body></html>

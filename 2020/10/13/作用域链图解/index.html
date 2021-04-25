@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 作用域链图解 · 前端Store</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="作用域链图解 - J.K"><meta name="keywords"><meta name="author" content="J.K"><link rel="short icon" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/favicon.ico"><link rel="stylesheet" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="前端Store"><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="前端Store" type="application/atom+xml">
+</head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/logo.png"></a><ul id="nav_list" class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/categories/live/" target="_self" data-hover="生活" class="nav-list-link">生活</a></li><li class="nav-list-item"><a href="/categories/read/" target="_self" data-hover="读书" class="nav-list-link">读书</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div><div id="nav_btn" class="nav-btn"><span></span><span></span><span></span></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">作用域链图解</h1><div class="post-info">2020-10-13<p class="visit"><i data-identity="2020/10/13/作用域链图解/" class="article-timer"></i><span>次访问</span></p></div><div class="post-content"><h2 id="作用域链图解"><a href="#作用域链图解" class="headerlink" title="作用域链图解"></a><strong>作用域链图解</strong></h2><p><img src="/images/zuoyongyulian.jpg" alt="作用域链"></p>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a><strong>作用域</strong></h2><p>js采用词法作用域<br>在ES6之前，js中有三种作用域</p>
+<blockquote>
+<ol>
+<li>全局作用域</li>
+<li>函数作用域</li>
+<li>eval作用域（严格模式下才有）</li>
+</ol>
+</blockquote>
+<p>以上作用域内声明的变量或方法只有当前作用域内有效。</p>
+<p>作用域最大的用处就是隔离变量，不同作用域下同名变量不会有冲突。</p>
+<h2 id="全局作用域"><a href="#全局作用域" class="headerlink" title="全局作用域"></a><strong>全局作用域</strong></h2><p>不在任何函数内声明的变量称作全局变量，它在js程序中的任何地方都是可见的。<br>代码在程序的任何地方都能被访问，window 对象的内置属性都拥有全局作用域。</p>
+<h2 id="函数作用域"><a href="#函数作用域" class="headerlink" title="函数作用域"></a><strong>函数作用域</strong></h2><p>在函数内声明的变量具有函数作用域，并且只在函数内可见。<br>在固定的代码片段才能被访问</p>
+<h2 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a><strong>块级作用域</strong></h2><p>而ES6新增了一个 块级作用域</p>
+<p>块级作用域可以简单理解为是: 包在大括号{}里面的内容, 它可以自成一个作用域, 但ES5中也有大括号, 可ES5中并没有块级作用域, 这时该怎样判断 {} 是否具有块级作用域的特点?</p>
+<p>这时就得用到 let 和 const</p>
+<p>因此, 可以将块级作用域理解为: 使用let和const声明的变量, 只在当前大阔号内生效, 由此构建出了 块级作用域 这么个东西.<br>这里的 “大括号内” 主要指的下面几种情况:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 条件语句 if  else   else if</span></span><br><span class="line"><span class="keyword">if</span> () &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// switch语句</span></span><br><span class="line"><span class="keyword">switch</span> () &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// for / while循环语句</span></span><br><span class="line"><span class="keyword">for</span> () &#123;&#125;</span><br><span class="line"><span class="keyword">while</span> () &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// try...catch语句</span></span><br><span class="line"><span class="keyword">try</span> () <span class="keyword">catch</span> (err) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 单大括号</span></span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过var定义的变量可以跨块作用域访问到（就相当于块级作用域中的var是定义到上级作用域中的（函数作用域或者全局作用域）），但是不能跨函数作用域访问到</p>
+<p>通过下面的代码也可知：if语句和for语句属于块作用域，不属于函数作用域。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(a); <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(a); <span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 可见，通过var定义的变量可以跨块作用域访问到。</span></span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="keyword">function</span> <span class="title">A</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">var</span> b = <span class="number">2</span>;</span><br><span class="line"><span class="built_in">console</span>.log(b); <span class="comment">// 2</span></span><br><span class="line">&#125;)();</span><br><span class="line"><span class="comment">// console.log(b); // 报错，</span></span><br><span class="line"><span class="comment">// 可见，通过var定义的变量不能跨函数作用域访问到</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> c = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(c); <span class="comment">// 3</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">var</span> d = <span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(i); <span class="comment">// 4   (循环结束i已经是4，所以此处i为4)</span></span><br><span class="line"><span class="built_in">console</span>.log(d); <span class="comment">// 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// if语句和for语句中用var定义的变量可以在外面访问到，</span></span><br><span class="line"><span class="comment">// 可见，if语句和for语句属于块作用域，不属于函数作用域。</span></span><br></pre></td></tr></table></figure>
+
+<p>var定义的变量，没有块的概念，可以跨块访问, 不能跨函数访问。可声明提升</p>
+<p>let定义的变量，只能在块作用域里访问，不能跨块访问，也不能跨函数访问。不可声明提升</p>
+<p>const用来定义常量，使用时必须初始化(即必须赋值)，只能在块作用域里访问，而且不能修改。不可声明提升</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 块作用域</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">let</span> b = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">const</span> c = <span class="number">3</span>;</span><br><span class="line">  <span class="comment">// c = 4; // 报错</span></span><br><span class="line">  <span class="keyword">var</span> aa;</span><br><span class="line">  <span class="keyword">let</span> bb;</span><br><span class="line">  <span class="comment">// const cc; // 报错</span></span><br><span class="line">  <span class="built_in">console</span>.log(a); <span class="comment">// 1</span></span><br><span class="line">  <span class="built_in">console</span>.log(b); <span class="comment">// 2</span></span><br><span class="line">  <span class="built_in">console</span>.log(c); <span class="comment">// 3</span></span><br><span class="line">  <span class="built_in">console</span>.log(aa); <span class="comment">// undefined</span></span><br><span class="line">  <span class="built_in">console</span>.log(bb); <span class="comment">// undefined</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(a); <span class="comment">// 1</span></span><br><span class="line"><span class="comment">// console.log(b); // 报错</span></span><br><span class="line"><span class="comment">// console.log(c); // 报错</span></span><br><span class="line"><span class="comment">// 函数作用域</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span> <span class="title">A</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> d = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> e = <span class="number">6</span>;</span><br><span class="line">    <span class="keyword">const</span> f = <span class="number">7</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(d); <span class="comment">// 5</span></span><br><span class="line">    <span class="built_in">console</span>.log(e); <span class="comment">// 6  (在同一个&#123; &#125;中,也属于同一个块，可以正常访问到)</span></span><br><span class="line">    <span class="built_in">console</span>.log(f); <span class="comment">// 7  (在同一个&#123; &#125;中,也属于同一个块，可以正常访问到)</span></span><br><span class="line">&#125;)();</span><br><span class="line"><span class="comment">// console.log(d); // 报错</span></span><br><span class="line"><span class="comment">// console.log(e); // 报错</span></span><br><span class="line"><span class="comment">// console.log(f); // 报错</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="自由变量"><a href="#自由变量" class="headerlink" title="自由变量"></a><strong>自由变量</strong></h2><p>在A作用域中使用的变量x，却没有在A作用域中声明（即在其他作用域中声明的），对于A作用域来说，x就是一个自由变量。如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> b = <span class="number">20</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(b + x); <span class="comment">// x变量在这里就是一个自由变量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a><strong>作用域链</strong></h2><p><img src="/images/zyyl.png" alt="作用域链"></p>
+<p>作用域有上下级关系，上下级关系的确定就看函数是在哪个作用域下创建的。如上，fn作用域下创建了bar函数，那么“fn作用域”就是“bar作用域”的上级。</p>
+<p>变量取值：<b class="c42b983">到创建 这个变量 的函数的作用域中取值，切记是创建的作用域中取值，而不是调用的作用域中取值！其实这就是所谓的“静态作用域”。</b></p>
+<p>但是如果在当前作用域中没有查到值，就会向上级作用域去查，直到查到全局作用域，这么一个查找过程形成的链条就叫做作用域链。</p>
+<p>所以下面的结果是10</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">show</span>(<span class="params">f</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x = <span class="number">20</span>;</span><br><span class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      f();    <span class="comment">// 10 而不是20</span></span><br><span class="line">    &#125;)()  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">show(fn); <span class="comment">// 10</span></span><br></pre></td></tr></table></figure>
+
+<p>对于本文第一段代码，在fn函数中，取自由变量x的值时，要到哪个作用域中取？</p>
+<blockquote>
+<p>要到创建fn函数的那个作用域中取, 无论fn函数将在哪里调用。</p>
+</blockquote>
+<p>上面描述的只是跨一步作用域去寻找。</p>
+<p>如果跨了一步，还没找到呢？——接着跨！——一直跨到全局作用域为止。要是在全局作用域中都没有找到，那就是真的没有了。<br>这个一步一步“跨”的路线，我们称之为——作用域链。</p>
+<p><img src="/images/zyylx.png" alt="作用域链"></p>
+<p>以上代码中：第13行，fn()返回的是bar函数，赋值给x。执行x()，即执行bar函数代码。取b的值时，直接在fn作用域取出。取a的值时，试图在fn作用域取，但是取不到，只能转向创建fn的那个作用域中去查找，结果找到了。</p>
+</div></article></div><div class="right-container"><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2020/10/13/javascript%E7%BB%A7%E6%89%BF%E6%80%BB%E7%BB%93/" title="javascript继承总结" class="prev">PREV</a><a href="/2020/10/12/HTTP%E5%8D%8F%E5%95%86%E7%BC%93%E5%AD%98VS%E5%BC%BA%E7%BC%93%E5%AD%98%E5%8E%9F%E7%90%86/" title="HTTP协商缓存VS强缓存原理" class="next">NEXT</a></div><a href="#comment" class="comment-anchor"></a><div id="vcomments"></div><script>new Valine({
+    el: "#vcomments",
+    appId: "aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz",
+    appKey: "FdzS5SOPHdhYQoEUngQ8K2QW",
+    notify: false,
+    verify: false,
+    avatar: "robohash",
+    visitor: true,
+    placeholder: "随便说点什么～.～",
+});</script><div class="copyright"><p>© 2016 - 2021 <a target="_blank">J.K</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p><p> <span style="padding-right: 6px;">闽ICP备16007301号-2</span></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/jquery-1.8.2.min.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/articleCatalog.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>const valineAPI = (() => {
+try {
+    AV.init("aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz", "FdzS5SOPHdhYQoEUngQ8K2QW");
+} catch(error) {}
+const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+    query.equalTo("identity", identity);
+    query.find().then(results => {
+        resolve(results.length > 0);
+    }, error => reject(error));
+    })
+}
+
+const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+    let querys = [];
+    for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+    }
+    query = AV.Query.or.apply(null ,querys);
+    } else {
+    identity = identity || getRealPath();
+    query = new AV.Query("Timer");
+    query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+    query.find()
+    .then(results => resolve(results))
+    .catch(error => reject(error))
+    })
+}
+
+const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let Todo = AV.Object.extend('Timer');
+    let todo = new Todo();
+    todo.set("times", 1);
+    todo.set("identity", identity);
+    todo.save().then(res => resolve(true), error => reject(error));
+    })
+}
+
+const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let query = new AV.Query('Timer');
+    query.equalTo("identity", identity);
+    query.find().then(todos => {
+        todos.forEach(todo => {
+        todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+    }).then(todos => resolve(true), error => reject(error));
+    })
+}
+
+return {
+    isExist,
+    _get,
+    update,
+    create
+}
+})()
+
+const calcAndWriteTimes = () => {
+let isPost = true;
+
+let timerAllDOM = document.querySelectorAll(".article-timer");
+
+if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+    if(exist) {
+        return valineAPI.update(identity);
+    }
+    return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+}
+
+let timerDOMCache = {};
+
+for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+    timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+    timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+    };
+    }
+}
+
+let identities = Object.keys(timerDOMCache);
+valineAPI._get(identities).then(results => {
+    for(let result of results) {
+    let {identity, times} = result.attributes;
+    timerDOMCache[identity].times = times;
+    timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+    if(timerDOMCache[identity].times){
+        continue;
+    }
+    timerDOMCache[identity].dom.map(item => item.innerText = 1);
+    valineAPI.create(identity);
+    }
+}).catch(error => console.log(error.message))
+}
+
+if(true){
+calcAndWriteTimes();
+}</script></body></html>

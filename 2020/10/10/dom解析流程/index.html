@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> DOM解析流程 · 前端Store</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="DOM解析流程 - J.K"><meta name="keywords"><meta name="author" content="J.K"><link rel="short icon" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/favicon.ico"><link rel="stylesheet" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="前端Store"><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="前端Store" type="application/atom+xml">
+</head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/logo.png"></a><ul id="nav_list" class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/categories/live/" target="_self" data-hover="生活" class="nav-list-link">生活</a></li><li class="nav-list-item"><a href="/categories/read/" target="_self" data-hover="读书" class="nav-list-link">读书</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div><div id="nav_btn" class="nav-btn"><span></span><span></span><span></span></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">DOM解析流程</h1><div class="post-info">2020-10-10<p class="visit"><i data-identity="2020/10/10/dom解析流程/" class="article-timer"></i><span>次访问</span></p></div><div class="post-content"><h2 id="什么是DOM"><a href="#什么是DOM" class="headerlink" title="什么是DOM"></a><strong>什么是DOM</strong></h2><blockquote>
+<p>Document Object Model 文档对象模型</p>
+</blockquote>
+<p>什么是DOM？可能很多人第一反应就是div、p、span等html标签（至少我是），但要知道，DOM是Model，是Object Model，对象模型，是为HTML（and XML）提供的API。HTML(Hyper Text Markup Language)是一种标记语言，HTML在DOM的模型标准中被视为对象，DOM只提供编程接口，却无法实际操作HTML里面的内容。但在浏览器端，前端们可以用脚本语言（JavaScript）通过DOM去操作HTML内容。</p>
+<p>那么问题来了，只有JavaScript才能调用DOM这个API吗？</p>
+<p>答案是NO。</p>
+<p>Python也可以访问DOM。所以DOM不是提供给Javascript的API，也不是Javascript里的API。</p>
+<p><b class="c42b983">PS: 实质上还存在CSSOM：CSS Object Model，浏览器将CSS代码解析成树形的数据结构，与DOM是两个独立的数据结构。</b></p>
+<h2 id="浏览器渲染过程"><a href="#浏览器渲染过程" class="headerlink" title="浏览器渲染过程"></a><strong>浏览器渲染过程</strong></h2><blockquote>
+<p>讨论DOM操作成本，肯定要先了解该成本的来源，那么就离不开浏览器渲染。</p>
+</blockquote>
+<p>这里暂只讨论浏览器拿到HTML之后开始解析、渲染。（怎么拿到HTML资源的可能后续另开篇总结吧，什么握握握手啊挥挥挥挥手啊，万恶的flag…）</p>
+<blockquote>
+<p>1.解析HTML，构建DOM树（这里遇到外链，此时会发起请求）</p>
+</blockquote>
+<blockquote>
+<p>2.解析CSS，生成CSS规则树</p>
+</blockquote>
+<blockquote>
+<p>3.合并DOM树和CSS规则，生成render树</p>
+</blockquote>
+<blockquote>
+<p>4.布局render树（Layout/reflow），负责各元素尺寸、位置的计算</p>
+</blockquote>
+<blockquote>
+<p>5.绘制render树（paint），绘制页面像素信息</p>
+</blockquote>
+<blockquote>
+<p>6.浏览器会将各层的信息发送给GPU，GPU将各层合成（composite），显示在屏幕上</p>
+</blockquote>
+<h3 id="1-构建DOM树"><a href="#1-构建DOM树" class="headerlink" title="1.构建DOM树"></a><strong>1.构建DOM树</strong></h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width,initial-scale=1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">&quot;style.css&quot;</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Critical Path<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Hello <span class="tag">&lt;<span class="name">span</span>&gt;</span>web performance<span class="tag">&lt;/<span class="name">span</span>&gt;</span> students!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;awesome-photo.jpg&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>无论是DOM还是CSSOM，都是要经过<b class="c42b983">Bytes → characters → tokens → nodes → object model</b>这个过程。</p>
+</blockquote>
+<blockquote>
+<p>DOM树构建过程：当前节点的所有子节点都构建好后才会去构建当前节点的下一个兄弟节点。</p>
+</blockquote>
+<h3 id="2-构建CSSOM树"><a href="#2-构建CSSOM树" class="headerlink" title="2.构建CSSOM树"></a><strong>2.构建CSSOM树</strong></h3><p>上述也提到了CSSOM的构建过程，也是树的结构，在最终计算各个节点的样式时，浏览器都会先从该节点的普遍属性（比如body里设置的全局样式）开始，再去应用该节点的具体属性。还有要注意的是，每个浏览器都有自己默认的样式表，因此很多时候这棵CSSOM树只是对这张默认样式表的部分替换。</p>
+<h3 id="3-生成render树"><a href="#3-生成render树" class="headerlink" title="3.生成render树"></a><strong>3.生成render树</strong></h3><blockquote>
+<p>DOM树和CSSOM树合并生成render树</p>
+</blockquote>
+<p><img src="/images/rendertree.png" alt="renderTree"></p>
+<p>简单描述这个过程：</p>
+<p>DOM树从根节点开始遍历可见节点，这里之所以强调了“可见”，是因为如果遇到设置了类似display: none;的不可见节点，在render过程中是会被跳过的（<b class="c42b983">但visibility: hidden; opacity: 0这种仍旧占据空间的节点不会被跳过render</b>），保存各个节点的样式信息及其余节点的从属关系。</p>
+<h3 id="4-Layout-布局"><a href="#4-Layout-布局" class="headerlink" title="4.Layout 布局"></a><strong>4.Layout 布局</strong></h3><p>有了各个节点的样式信息和属性，但不知道各个节点的确切位置和大小，所以要通过布局将样式信息和属性转换为实际可视窗口的相对大小和位置。</p>
+<h3 id="5-Paint-绘制"><a href="#5-Paint-绘制" class="headerlink" title="5.Paint 绘制"></a><strong>5.Paint 绘制</strong></h3><p>万事俱备，最后只要将确定好位置大小的各节点，通过GPU渲染到屏幕的实际像素。</p>
+<blockquote>
+<ul>
+<li>在上述渲染过程中，前3点可能要多次执行，比如js脚本去操作dom、更改css样式时，浏览器又要重新构建DOM、CSSOM树，重新render，重新layout、paint；</li>
+<li>Layout在Paint之前，因此每次Layout重新布局（reflow 回流）后都要重新出发Paint渲染，这时又要去消耗GPU；</li>
+<li>Paint不一定会触发Layout，比如改个颜色改个背景；（repaint 重绘）</li>
+<li>图片下载完也会重新出发Layout和Paint；</li>
+</ul>
+</blockquote>
+<p><img src="/images/paint.png" alt="paint"></p>
+<h2 id="回流和重绘"><a href="#回流和重绘" class="headerlink" title="回流和重绘"></a>回流和重绘</h2><h3 id="何时触发reflow和repaint"><a href="#何时触发reflow和repaint" class="headerlink" title="何时触发reflow和repaint"></a><strong>何时触发reflow和repaint</strong></h3><blockquote>
+<p>reflow(回流): 根据Render Tree布局(几何属性)，意味着<b class="c42b983">元素的内容、结构、位置或尺寸</b>发生了变化，需要重新计算样式和渲染树；</p>
+</blockquote>
+<blockquote>
+<p>repaint(重绘): 意味着元素发生的改变只影响了节点的一些<b class="c42b983">样式（背景色，边框颜色，文字颜色等）</b>，只需要应用新样式绘制这个元素就可以了；</p>
+</blockquote>
+<blockquote>
+<p>reflow回流的成本开销要高于repaint重绘，一个节点的回流往往回导致子节点以及同级节点的回流；</p>
+</blockquote>
+<p>GoogleChromeLabs 里面有一个csstriggers，列出了各个CSS属性对浏览器执行Layout、Paint、Composite的影响。</p>
+<h3 id="引起reflow回流"><a href="#引起reflow回流" class="headerlink" title="引起reflow回流"></a><strong>引起reflow回流</strong></h3><blockquote>
+<p>现代浏览器会对回流做优化，它会等到足够数量的变化发生，再做一次批处理回流。</p>
+</blockquote>
+<blockquote>
+<p>1.页面第一次渲染（初始化）</p>
+</blockquote>
+<blockquote>
+<p>2.DOM树变化（如：增删节点）</p>
+</blockquote>
+<blockquote>
+<p>3.Render树变化（如：padding改变）</p>
+</blockquote>
+<blockquote>
+<p>4.浏览器窗口resize</p>
+</blockquote>
+<blockquote>
+<p>5.获取元素的某些属性：<br>浏览器为了获得正确的值也会提前触发回流，这样就使得浏览器的优化失效了，这些属性包括offsetLeft、offsetTop、offsetWidth、offsetHeight、 scrollTop/Left/Width/Height、clientTop/Left/Width/Height、调用了getComputedStyle()或者IE的currentStyle</p>
+</blockquote>
+<h3 id="引起repaint重绘"><a href="#引起repaint重绘" class="headerlink" title="引起repaint重绘"></a><strong>引起repaint重绘</strong></h3><blockquote>
+<p>1.reflow回流必定引起repaint重绘，重绘可以单独触发<br>2.背景色、颜色、字体改变（注意：字体大小发生变化时，会触发回流）</p>
+</blockquote>
+<h3 id="优化reflow、repaint触发次数"><a href="#优化reflow、repaint触发次数" class="headerlink" title="优化reflow、repaint触发次数"></a><strong>优化reflow、repaint触发次数</strong></h3><blockquote>
+<ul>
+<li>避免逐个修改节点样式，尽量一次性修改</li>
+<li>使用DocumentFragment将需要多次修改的DOM元素缓存，最后一次性append到真实DOM中渲染</li>
+<li>可以将需要多次修改的DOM元素设置display: none，操作完再显示。（因为隐藏元素不在render树内，因此修改隐藏元素不会触发回流重绘）</li>
+<li>避免多次读取某些属性（见上）</li>
+<li>将复杂的节点元素脱离文档流，降低回流成本</li>
+</ul>
+</blockquote>
+<h3 id="为什么一再强调将css放在头部，将js文件放在尾部"><a href="#为什么一再强调将css放在头部，将js文件放在尾部" class="headerlink" title="为什么一再强调将css放在头部，将js文件放在尾部"></a><strong>为什么一再强调将css放在头部，将js文件放在尾部</strong></h3><p>DOMContentLoaded 和 load</p>
+<blockquote>
+<p>DOMContentLoaded 事件触发时，仅当DOM加载完成，不包括样式表，图片…</p>
+</blockquote>
+<blockquote>
+<p>load 事件触发时，页面上所有的DOM，样式表，脚本，图片都已加载完成</p>
+</blockquote>
+<h3 id="CSS-资源阻塞渲染"><a href="#CSS-资源阻塞渲染" class="headerlink" title="CSS 资源阻塞渲染"></a><strong>CSS 资源阻塞渲染</strong></h3><blockquote>
+<p>构建Render树需要DOM和CSSOM，所以HTML和CSS都会阻塞渲染。所以需要让CSS尽早加载（如：放在头部），以缩短首次渲染的时间。</p>
+</blockquote>
+<h3 id="JS-资源"><a href="#JS-资源" class="headerlink" title="JS 资源"></a><strong>JS 资源</strong></h3><blockquote>
+<ul>
+<li>阻塞浏览器的解析，也就是说发现一个外链脚本时，需等待脚本下载完成并执行后才会继续解析HTML; <ul>
+<li>这和之前文章提到的浏览器线程有关，浏览器中js引擎线程和渲染线程是互斥的</li>
+</ul>
+</li>
+<li>普通的脚本会阻塞浏览器解析，加上defer或async属性，脚本就变成异步，可等到解析完毕再执行。<ul>
+<li>async异步执行，异步下载完毕后就会执行，不确保执行顺序，一定在onload前，但不确定在DOMContentLoaded事件的前后；</li>
+<li>defer延迟执行，相对于放在body最后（理论上在DOMContentLoaded事件前）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width,initial-scale=1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">&quot;style.css&quot;</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Hello <span class="tag">&lt;<span class="name">span</span>&gt;</span>web performance<span class="tag">&lt;/<span class="name">span</span>&gt;</span> students!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;awesome-photo.jpg&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;app.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/jssource.png" alt="source"></p>
+<blockquote>
+<ul>
+<li>浏览器拿到HTML后，从上到下顺序解析文档</li>
+<li>此时遇到css、js外链，则同时发起请求</li>
+<li>开始构建DOM树</li>
+<li>这里要特别注意，由于有CSS资源，CSSOM还未构建前，会阻塞js（如果有的话）</li>
+<li>无论JavaScript是内联还是外链，只要浏览器遇到 script 标记，唤醒JavaScript解析器，就会进行暂停 blocked 浏览器解析HTML，并等到 CSSOM 构建完毕，才执行js脚本</li>
+<li>渲染首屏（DOMContentLoaded 触发，其实不一定是首屏，可能在js脚本执行前DOM树和CSSOM已经构建完render树，已经paint）</li>
+</ul>
+</blockquote>
+<h2 id="首屏优化Tips"><a href="#首屏优化Tips" class="headerlink" title="首屏优化Tips"></a><strong>首屏优化Tips</strong></h2><blockquote>
+<p>说了这么多，其实可以总结几点浏览器首屏渲染优化的方向</p>
+<ul>
+<li>减少资源请求数量（内联亦或是延迟动态加载）</li>
+<li>使CSS样式表尽早加载，减少@import的使用，因为需要解析完样式表中所有import的资源才会算CSS资源下载完</li>
+<li>异步js：阻塞解析器的 JavaScript 会强制浏览器等待 CSSOM 并暂停 DOM 的构建，导致首次渲染的时间延迟</li>
+<li>……</li>
+</ul>
+</blockquote>
+</div></article></div><div class="right-container"><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2020/10/12/HTTP%E5%8D%8F%E5%95%86%E7%BC%93%E5%AD%98VS%E5%BC%BA%E7%BC%93%E5%AD%98%E5%8E%9F%E7%90%86/" title="HTTP协商缓存VS强缓存原理" class="prev">PREV</a></div><a href="#comment" class="comment-anchor"></a><div id="vcomments"></div><script>new Valine({
+    el: "#vcomments",
+    appId: "aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz",
+    appKey: "FdzS5SOPHdhYQoEUngQ8K2QW",
+    notify: false,
+    verify: false,
+    avatar: "robohash",
+    visitor: true,
+    placeholder: "随便说点什么～.～",
+});</script><div class="copyright"><p>© 2016 - 2021 <a target="_blank">J.K</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p><p> <span style="padding-right: 6px;">闽ICP备16007301号-2</span></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/jquery-1.8.2.min.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/articleCatalog.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>const valineAPI = (() => {
+try {
+    AV.init("aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz", "FdzS5SOPHdhYQoEUngQ8K2QW");
+} catch(error) {}
+const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+    query.equalTo("identity", identity);
+    query.find().then(results => {
+        resolve(results.length > 0);
+    }, error => reject(error));
+    })
+}
+
+const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+    let querys = [];
+    for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+    }
+    query = AV.Query.or.apply(null ,querys);
+    } else {
+    identity = identity || getRealPath();
+    query = new AV.Query("Timer");
+    query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+    query.find()
+    .then(results => resolve(results))
+    .catch(error => reject(error))
+    })
+}
+
+const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let Todo = AV.Object.extend('Timer');
+    let todo = new Todo();
+    todo.set("times", 1);
+    todo.set("identity", identity);
+    todo.save().then(res => resolve(true), error => reject(error));
+    })
+}
+
+const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let query = new AV.Query('Timer');
+    query.equalTo("identity", identity);
+    query.find().then(todos => {
+        todos.forEach(todo => {
+        todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+    }).then(todos => resolve(true), error => reject(error));
+    })
+}
+
+return {
+    isExist,
+    _get,
+    update,
+    create
+}
+})()
+
+const calcAndWriteTimes = () => {
+let isPost = true;
+
+let timerAllDOM = document.querySelectorAll(".article-timer");
+
+if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+    if(exist) {
+        return valineAPI.update(identity);
+    }
+    return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+}
+
+let timerDOMCache = {};
+
+for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+    timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+    timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+    };
+    }
+}
+
+let identities = Object.keys(timerDOMCache);
+valineAPI._get(identities).then(results => {
+    for(let result of results) {
+    let {identity, times} = result.attributes;
+    timerDOMCache[identity].times = times;
+    timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+    if(timerDOMCache[identity].times){
+        continue;
+    }
+    timerDOMCache[identity].dom.map(item => item.innerText = 1);
+    valineAPI.create(identity);
+    }
+}).catch(error => console.log(error.message))
+}
+
+if(true){
+calcAndWriteTimes();
+}</script></body></html>

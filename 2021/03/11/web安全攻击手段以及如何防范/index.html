@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> web安全攻击手段以及如何防范 · 前端Store</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="web安全攻击手段以及如何防范 - J.K"><meta name="keywords"><meta name="author" content="J.K"><link rel="short icon" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/favicon.ico"><link rel="stylesheet" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="前端Store"><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="前端Store" type="application/atom+xml">
+</head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/logo.png"></a><ul id="nav_list" class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/categories/live/" target="_self" data-hover="生活" class="nav-list-link">生活</a></li><li class="nav-list-item"><a href="/categories/read/" target="_self" data-hover="读书" class="nav-list-link">读书</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div><div id="nav_btn" class="nav-btn"><span></span><span></span><span></span></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">web安全攻击手段以及如何防范</h1><div class="post-info">2021-03-11<p class="visit"><i data-identity="2021/03/11/web安全攻击手段以及如何防范/" class="article-timer"></i><span>次访问</span></p></div><div class="post-content"><p>对于常规的Web攻击手段，如XSS、CRSF、SQL注入、（常规的不包括文件上传漏洞、DDoS攻击）等</p>
+<p>比如XSS的防范需要转义掉输入的尖括号; 防止CRSF攻击需要将cookie设置为httponly，以及增加session相关的Hash token码; SQL注入的防范需要将分号等字符转义，</p>
+<h2 id="xss-cross-site-scripting-跨站脚本攻击"><a href="#xss-cross-site-scripting-跨站脚本攻击" class="headerlink" title="xss(cross site scripting) 跨站脚本攻击"></a><strong>xss(cross site scripting) 跨站脚本攻击</strong></h2><p>定义: 指攻击者在网页嵌入脚本，用户浏览网页触发恶意脚本执行</p>
+<blockquote>
+<p>XSS攻击分为3类：存储型（持久型）、反射型（非持久型）、基于DOM</p>
+</blockquote>
+<p>如何防范:</p>
+<blockquote>
+<ul>
+<li>设置HttpOnly以避免cookie劫持的危险 </li>
+<li>过滤，对诸如script、img、a等标签进行过滤 </li>
+<li>编码，像一些常见的符号，如&lt;&gt;在输入的时候要对其进行转换编码 </li>
+<li>限制，对于一些可以预期的输入可以通过限制长度强制截断来进行防御</li>
+</ul>
+</blockquote>
+<h2 id="CSRF-cross-site-request-forgery-跨站请求伪造-CSRF-或者-XSRF"><a href="#CSRF-cross-site-request-forgery-跨站请求伪造-CSRF-或者-XSRF" class="headerlink" title="CSRF(cross site request forgery) 跨站请求伪造(CSRF 或者 XSRF)"></a><strong>CSRF(cross site request forgery) 跨站请求伪造(CSRF 或者 XSRF)</strong></h2><p>CSRF攻击的全称是跨站请求伪造（ cross site request forgery)，是一种对网站的恶意利用，尽管听起来跟XSS跨站脚本攻击有点相似，但事实上CSRF与XSS差别很大，XSS利用的是站点内的信任用户，而CSRF则是通过伪装来自受信任用户的请求来利用受信任的网站。</p>
+<h3 id="CSRF攻击原理"><a href="#CSRF攻击原理" class="headerlink" title="CSRF攻击原理"></a><strong>CSRF攻击原理</strong></h3><blockquote>
+<ol>
+<li>首先用户C浏览并登录了受信任站点A；</li>
+<li>登录信息验证通过以后，站点A会在返回给浏览器的信息中带上已登录的cookie，cookie信息会在浏览器端保存一定时间（根据服务端设置而定）；</li>
+<li>完成这一步以后，用户在没有登出（清除站点A的cookie）站点A的情况下，访问恶意站点B；</li>
+<li>这时恶意站点 B的某个页面向站点A发起请求，而这个请求会带上浏览器端所保存的站点A的cookie；</li>
+<li>站点A根据请求所带的cookie，判断此请求为用户C所发送的。</li>
+</ol>
+</blockquote>
+<p>因此，站点A会报据用户C的权限来处理恶意站点B所发起的请求，而这个请求可能以用户C的身份发送 邮件、短信、消息，以及进行转账支付等操作，这样恶意站点B就达到了伪造用户C请求站点 A的目的。</p>
+<p>受害者只需要做下面两件事情，攻击者就能够完成CSRF攻击：</p>
+<blockquote>
+<ul>
+<li>登录受信任站点 A，并在本地生成cookie；</li>
+<li>在不登出站点A（清除站点A的cookie）的情况下，访问恶意站点B。</li>
+</ul>
+</blockquote>
+<h3 id="CSRF的防御"><a href="#CSRF的防御" class="headerlink" title="CSRF的防御"></a><strong>CSRF的防御</strong></h3><p>1、尽量使用POST，限制GET</p>
+<p>GET接口太容易被拿来做CSRF攻击，看上面示例就知道，只要构造一个img标签，而img标签又是不能过滤的数据。接口最好限制为POST使用，GET则无效，降低攻击风险。</p>
+<p>当然POST并不是万无一失，攻击者只要构造一个form就可以，但需要在第三方页面做，这样就增加暴露的可能性。</p>
+<p>2、将cookie设置为HttpOnly</p>
+<p>CRSF攻击很大程度上是利用了浏览器的cookie，为了防止站内的XSS漏洞盗取cookie,需要在cookie中设置“HttpOnly”属性，这样通过程序（如JavaScript脚本、Applet等）就无法读取到cookie信息，避免了攻击者伪造cookie的情况出现。<br>在Java的Servlet的API中设置cookie为HttpOnly的代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ctx.cookies.set(<span class="string">&#x27;cookiename&#x27;</span>, <span class="string">&#x27;cookievalue&#x27;</span>, &#123; <span class="attr">httpOnly</span>: <span class="literal">true</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>3、增加token</p>
+<p>CSRF攻击之所以能够成功，是因为攻击者可以伪造用户的请求，该请求中所有的用户验证信息都存在于cookie中，因此攻击者可以在不知道用户验证信息的情况下直接利用用户的cookie来通过安全验证。</p>
+<p>由此可知，抵御CSRF攻击的关键在于：在请求中放入攻击者所不能伪造的信息，并且该信总不存在于cookie之中。鉴于此，系统开发人员可以在HTTP请求中以参数的形式加入一个随机产生的token，并在服务端进行token校验，如果请求中没有token或者token内容不正确，则认为是CSRF攻击而拒绝该请求。</p>
+<p>假设请求通过POST方式提交，则可以在相应的表单中增加一个隐藏域：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;_toicen&quot;</span> <span class="attr">value</span>=<span class="string">&quot;tokenvalue&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>token的值通过服务端生成，表单提交后token的值通过POST请求与参数一同带到服务端，每次会话可以使用相同的token，会话过期，则token失效，攻击者因无法获取到token，也就无法伪造请求。</p>
+<p>在session中添加token的实现代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HttpSession session = request.getSession();</span><br><span class="line">Object token = session.getAttribute(<span class="string">&quot;_token&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(token == <span class="keyword">null</span> I I <span class="string">&quot;&quot;</span>.equals(token)) &#123;</span><br><span class="line">    session.setAttribute(<span class="string">&quot;_token&quot;</span>, UUID.randomUUIDO .toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4、通过Referer识别</p>
+<p>根据HTTP协议，在HTTP头中有一个字段叫Referer，它记录了该HTTP请求的来源地址。</p>
+<p>在通常情况下，访问一个安全受限的页面的请求都来自于同一个网站。比如某银行的转账是通过用户访问<a target="_blank" rel="noopener" href="http://www.xxx.com/transfer.do%E9%A1%B5%E9%9D%A2%E5%AE%8C%E6%88%90%E7%9A%84%EF%BC%8C%E7%94%A8%E6%88%B7%E5%BF%85%E9%A1%BB%E5%85%88%E7%99%BB%E5%BD%95www.xxx.com%EF%BC%8C%E7%84%B6%E5%90%8E%E9%80%9A%E8%BF%87%E5%8D%95%E5%87%BB%E9%A1%B5%E9%9D%A2%E4%B8%8A%E7%9A%84%E6%8F%90%E4%BA%A4%E6%8C%89%E9%92%AE%E6%9D%A5%E8%A7%A6%E5%8F%91%E8%BD%AC%E8%B4%A6%E4%BA%8B%E4%BB%B6%E3%80%82">http://www.xxx.com/transfer.do页面完成的，用户必须先登录www.xxx.com，然后通过单击页面上的提交按钮来触发转账事件。</a></p>
+<p>当用户提交请求时，该转账请求的Referer值就会是提交按钮所在页面的URL（本例为<a target="_blank" rel="noopener" href="http://www.xxx/">www.xxx</a>. com/transfer.do）。</p>
+<p>如果攻击者要对银行网站实施CSRF攻击，他只能在其他网站构造请求，当用户通过其他网站发送请求到银行时，该请求的Referer的值是其他网站的地址，而不是银行转账页面的地址。</p>
+<p>因此，要防御CSRF攻击，银行网站只需要对于每一个转账请求验证其Referer值即可，如果是以<a target="_blank" rel="noopener" href="http://www.xx.om域名开头的地址,则说明该请求是来自银行网站自己的请求,是合法的;/">www.xx.om域名开头的地址，则说明该请求是来自银行网站自己的请求，是合法的；</a></p>
+<p>如果Referer是其他网站，就有可能是CSRF攻击，则拒绝该请求。</p>
+<p>取得HTTP请求Referer：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ctx.headers[<span class="string">&quot;Referer&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="sql注入-SQL-injection"><a href="#sql注入-SQL-injection" class="headerlink" title="sql注入(SQL injection)"></a><strong>sql注入(SQL injection)</strong></h2><p>定义: 在未授权情况下，非法访问数据库信息</p>
+<p>如何防范:</p>
+<blockquote>
+<ul>
+<li>杜绝用户提交的参数入库并且执行 </li>
+<li>在代码层，不准出现sql语句 </li>
+<li>在web输入参数处，对所有的参数做sql转义 </li>
+<li>上线测试，需要使用sql自动注入工具进行所有的页面sql注入测试</li>
+</ul>
+</blockquote>
+</div></article></div><div class="right-container"><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2021/03/11/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/" title="前端模块化的理解" class="prev">PREV</a><a href="/2021/03/03/%E5%87%BD%E6%95%B0%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/" title="函数相关知识" class="next">NEXT</a></div><a href="#comment" class="comment-anchor"></a><div id="vcomments"></div><script>new Valine({
+    el: "#vcomments",
+    appId: "aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz",
+    appKey: "FdzS5SOPHdhYQoEUngQ8K2QW",
+    notify: false,
+    verify: false,
+    avatar: "robohash",
+    visitor: true,
+    placeholder: "随便说点什么～.～",
+});</script><div class="copyright"><p>© 2016 - 2021 <a target="_blank">J.K</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p><p> <span style="padding-right: 6px;">闽ICP备16007301号-2</span></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/jquery-1.8.2.min.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/articleCatalog.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>const valineAPI = (() => {
+try {
+    AV.init("aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz", "FdzS5SOPHdhYQoEUngQ8K2QW");
+} catch(error) {}
+const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+    query.equalTo("identity", identity);
+    query.find().then(results => {
+        resolve(results.length > 0);
+    }, error => reject(error));
+    })
+}
+
+const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+    let querys = [];
+    for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+    }
+    query = AV.Query.or.apply(null ,querys);
+    } else {
+    identity = identity || getRealPath();
+    query = new AV.Query("Timer");
+    query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+    query.find()
+    .then(results => resolve(results))
+    .catch(error => reject(error))
+    })
+}
+
+const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let Todo = AV.Object.extend('Timer');
+    let todo = new Todo();
+    todo.set("times", 1);
+    todo.set("identity", identity);
+    todo.save().then(res => resolve(true), error => reject(error));
+    })
+}
+
+const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let query = new AV.Query('Timer');
+    query.equalTo("identity", identity);
+    query.find().then(todos => {
+        todos.forEach(todo => {
+        todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+    }).then(todos => resolve(true), error => reject(error));
+    })
+}
+
+return {
+    isExist,
+    _get,
+    update,
+    create
+}
+})()
+
+const calcAndWriteTimes = () => {
+let isPost = true;
+
+let timerAllDOM = document.querySelectorAll(".article-timer");
+
+if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+    if(exist) {
+        return valineAPI.update(identity);
+    }
+    return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+}
+
+let timerDOMCache = {};
+
+for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+    timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+    timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+    };
+    }
+}
+
+let identities = Object.keys(timerDOMCache);
+valineAPI._get(identities).then(results => {
+    for(let result of results) {
+    let {identity, times} = result.attributes;
+    timerDOMCache[identity].times = times;
+    timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+    if(timerDOMCache[identity].times){
+        continue;
+    }
+    timerDOMCache[identity].dom.map(item => item.innerText = 1);
+    valineAPI.create(identity);
+    }
+}).catch(error => console.log(error.message))
+}
+
+if(true){
+calcAndWriteTimes();
+}</script></body></html>

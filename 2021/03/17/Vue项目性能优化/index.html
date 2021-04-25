@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> Vue项目性能优化 · 前端Store</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Vue项目性能优化 - J.K"><meta name="keywords"><meta name="author" content="J.K"><link rel="short icon" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/favicon.ico"><link rel="stylesheet" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="前端Store"><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="前端Store" type="application/atom+xml">
+</head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/logo.png"></a><ul id="nav_list" class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/categories/live/" target="_self" data-hover="生活" class="nav-list-link">生活</a></li><li class="nav-list-item"><a href="/categories/read/" target="_self" data-hover="读书" class="nav-list-link">读书</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div><div id="nav_btn" class="nav-btn"><span></span><span></span><span></span></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">Vue项目性能优化</h1><div class="post-info">2021-03-17<p class="visit"><i data-identity="2021/03/17/Vue项目性能优化/" class="article-timer"></i><span>次访问</span></p></div><div class="post-content"><p>Vue项目优化, 以下三部分组成:</p>
+<blockquote>
+<ul>
+<li>基础的 Web 技术层面的优化。</li>
+<li>webpack 配置层面的优化；</li>
+<li>Vue 代码层面的优化；</li>
+</ul>
+</blockquote>
+<h2 id="一-基础的-Web-技术优化"><a href="#一-基础的-Web-技术优化" class="headerlink" title="一.基础的 Web 技术优化"></a><strong>一.基础的 Web 技术优化</strong></h2><h3 id="1-开启-gzip-压缩"><a href="#1-开启-gzip-压缩" class="headerlink" title="1.开启 gzip 压缩"></a><strong>1.开启 gzip 压缩</strong></h3><p>gzip 是 GNUzip 的缩写，最早用于 UNIX 系统的文件压缩。HTTP 协议上的 gzip 编码是一种用来改进 web 应用程序性能的技术，web 服务器和客户端（浏览器）必须共同支持 gzip。</p>
+<p>目前主流的浏览器，Chrome，firefox，IE等都支持该协议。常见的服务器如 Apache，Nginx，IIS 同样支持，gzip 压缩效率非常高，通常可以达到 70% 的压缩率，也就是说，如果你的网页有 30K，压缩之后就变成了 9K 左右</p>
+<h3 id="2-浏览器缓存"><a href="#2-浏览器缓存" class="headerlink" title="2.浏览器缓存"></a><strong>2.浏览器缓存</strong></h3><p>为了提高用户加载页面的速度，对静态资源进行缓存是非常必要的，根据是否需要重新向服务器发起请求来分类，将 HTTP 缓存规则分为两大类（强缓存，协商缓存）</p>
+<h3 id="3-CDN-的使用"><a href="#3-CDN-的使用" class="headerlink" title="3.CDN 的使用"></a><strong>3.CDN 的使用</strong></h3><p>浏览器从服务器上下载 CSS、js 和图片等文件时都要和服务器连接，而大部分服务器的带宽有限，如果超过限制，网页就半天反应不过来。而 CDN 可以通过不同的域名来加载文件，从而使下载文件的并发连接数大大增加，且CDN 具有更好的可用性，更低的网络延迟和丢包率 。</p>
+<h3 id="4-使用-Chrome-Performance-查找性能瓶颈"><a href="#4-使用-Chrome-Performance-查找性能瓶颈" class="headerlink" title="4.使用 Chrome Performance 查找性能瓶颈"></a><strong>4.使用 Chrome Performance 查找性能瓶颈</strong></h3><p>window.performance是W3C性能小组引入的新的API，目前IE9以上的浏览器都支持。</p>
+<p><img src="/images/performance.png" alt="Performance"></p>
+<p>字段说明:</p>
+<p><b class="c42b983">connectStart</b> 和 <b class="c42b983">connectEnd</b>: 分别代表TCP建立连接和连接成功的时间节点。</p>
+<p><b class="c42b983">domComplete</b>：html文档完全解析完毕的时间节点。</p>
+<p><b class="c42b983">domContentLoadedEventStart</b> 和 <b class="c42b983">domContentLoadedEventEnd</b>：代表DOMContentLoaded事件触发和完成的时间节点。页面文档完全加载并解析完毕之后,会触发DOMContentLoaded事件，HTML文档不会等待样式文件,图片文件,子框架页面的加载(load事件可以用来检测HTML页面是否完全加载完毕(fully-loaded))。</p>
+<p><b class="c42b983">domInteractive</b>：代表浏览器解析html文档的状态为interactive时的时间节点。domInteractive并非DOMReady，它早于DOMReady触发，代表html文档解析完毕（即dom tree创建完成）但是内嵌资源（比如外链css、js等）还未加载的时间点。</p>
+<p><b class="c42b983">domLoading</b>：代表浏览器开始解析html文档的时间节点。我们知道IE浏览器下的document有readyState属性，domLoading的值就等于readyState改变为loading的时间节点。</p>
+<p><b class="c42b983">domainLookupStart</b> 和 <b class="c42b983">domainLookupEnd</b>：分别代表DNS查询的开始和结束时间节点。如果浏览器没有进行DNS查询（比如使用了cache），则两者的值都等于fetchStart。</p>
+<p><b class="c42b983">fetchStart</b>：是指在浏览器发起任何请求之前的时间值。在fetchStart和domainLookupStart之间，浏览器会检查当前文档的缓存。</p>
+<p><b class="c42b983">loadEventStart</b> 和 <b class="c42b983">loadEventEnd</b>：分别代表onload事件触发和结束的时间节点。</p>
+<p><b class="c42b983">navigationStart</b>：代表浏览器开始unload前一个页面文档的开始时间节点。比如我们当前正在浏览baidu.com，在地址栏输入google.com并回车，浏览器的执行动作依次为：unload当前文档（即baidu.com）-&gt;请求下一文档（即google.com）。navigationStart的值便是触发unload当前文档的时间节点。</p>
+<p><b class="c42b983">redirectStart</b> 和 <b class="c42b983">redirectEnd</b>：如果页面是由redirect而来，则redirectStart和redirectEnd分别代表redirect开始和结束的时间节点。</p>
+<p><b class="c42b983">requestStart</b>：代表浏览器发起请求的时间节点，请求的方式可以是请求服务器、缓存、本地资源等。</p>
+<p><b class="c42b983">responseStart</b> 和 <b class="c42b983">responseEnd</b>：分别代表浏览器收到从服务器端（或缓存、本地资源）响应回的第一个字节和最后一个字节数据的时刻。</p>
+<p><b class="c42b983">secureConnectionStart</b>：可选。如果页面使用HTTPS，它的值是安全连接握手之前的时刻。如果该属性不可用，则返回undefined。如果该属性可用，但没有使用HTTPS，则返回0。</p>
+<p><b class="c42b983">unloadEventStart</b> 和 <b class="c42b983">unloadEventEnd</b>：如果前一个文档和请求的文档是同一个域的，则unloadEventStart和unloadEventEnd分别代表浏览器unload前一个文档的开始和结束时间节点。否则两者都等于0。</p>
+<p>主要性能指标：</p>
+<blockquote>
+<ul>
+<li>DNS查询耗时 = domainLookupEnd - domainLookupStart</li>
+<li>TCP链接耗时 = connectEnd - connectStart</li>
+<li>request请求耗时 = responseEnd - responseStart</li>
+<li>解析dom树耗时 = domComplete - domInteractive</li>
+<li>白屏时间 = domLoading - fetchStart</li>
+<li>domready时间 = domContentLoadedEventEnd - fetchStart</li>
+<li>onload时间 = loadEventEnd - fetchStart</li>
+</ul>
+</blockquote>
+<h2 id="二-Webpack-层面的优化"><a href="#二-Webpack-层面的优化" class="headerlink" title="二.Webpack 层面的优化"></a><strong>二.Webpack 层面的优化</strong></h2><h3 id="1-Webpack-对图片进行压缩"><a href="#1-Webpack-对图片进行压缩" class="headerlink" title="1 Webpack 对图片进行压缩"></a><strong>1 Webpack 对图片进行压缩</strong></h3><p>在 vue 项目中除了可以在 webpack.base.conf.js 中 url-loader 中设置 limit 大小来对图片处理，对小于 limit 的图片转化为 base64 格式，其余的不做操作。</p>
+<p>所以对有些较大的图片资源，在请求资源的时候，加载会很慢，我们可以用 image-webpack-loader来压缩图片：</p>
+<ol>
+<li>首先，安装 image-webpack-loader:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install image-webpack-loader --save-dev</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>然后，在 webpack.base.conf.js 中进行配置：</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,</span><br><span class="line">  use:[</span><br><span class="line">    &#123;</span><br><span class="line">    loader: &#x27;url-loader&#x27;,</span><br><span class="line">    options: &#123;</span><br><span class="line">      limit: 10000,</span><br><span class="line">      name: utils.assetsPath(&#x27;img/[name].[hash:7].[ext]&#x27;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      loader: &#x27;image-webpack-loader&#x27;,</span><br><span class="line">      options: &#123;</span><br><span class="line">        bypassOnDebug: true,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-减少-ES6-转为-ES5-的冗余代码"><a href="#2-减少-ES6-转为-ES5-的冗余代码" class="headerlink" title="2.减少 ES6 转为 ES5 的冗余代码"></a><strong>2.减少 ES6 转为 ES5 的冗余代码</strong></h3><p>Babel 插件会在将 ES6 代码转换成 ES5 代码时会注入一些辅助函数，例如下面的 ES6 代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class HelloWebpack extends Component&#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码再被转换成能正常运行的 ES5 代码时需要以下两个辅助函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">babel-runtime&#x2F;helpers&#x2F;createClass  &#x2F;&#x2F; 用于实现 class 语法</span><br><span class="line">babel-runtime&#x2F;helpers&#x2F;inherits  &#x2F;&#x2F; 用于实现 extends 语法</span><br></pre></td></tr></table></figure>
+
+<p>在默认情况下， Babel 会在每个输出文件中内嵌这些依赖的辅助函数代码，如果多个源代码文件都依赖这些辅助函数，那么这些辅助函数的代码将会出现很多次，造成代码冗余。</p>
+<p>为了不让这些辅助函数的代码重复出现，可以在依赖它们时通过 require(‘babel-runtime/helpers/createClass’) 的方式导入，这样就能做到只让它们出现一次。</p>
+<p>babel-plugin-transform-runtime 插件就是用来实现这个作用的，将相关辅助函数进行替换成导入语句，从而减小 babel 编译出来的代码的文件大小。</p>
+<ol>
+<li>首先，安装 babel-plugin-transform-runtime ：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-plugin-transform-runtime --save-dev</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>然后，修改 .babelrc 配置文件为：</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;plugins&quot;: [</span><br><span class="line">    <span class="string">&quot;transform-runtime&quot;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-提取公共代码"><a href="#3-提取公共代码" class="headerlink" title="3.提取公共代码"></a><strong>3.提取公共代码</strong></h3><p>如果项目中没有去将每个页面的第三方库和公共模块提取出来，则项目会存在以下问题：</p>
+<blockquote>
+<ul>
+<li>相同的资源被重复加载，浪费用户的流量和服务器的成本。</li>
+<li>每个页面需要加载的资源太大，导致网页首屏加载缓慢，影响用户体验。</li>
+</ul>
+</blockquote>
+<p>所以我们需要将多个页面的公共代码抽离成单独的文件，来优化以上问题 。Webpack 内置了专门用于提取多个Chunk 中的公共部分的插件 CommonsChunkPlugin，我们在项目中 CommonsChunkPlugin 的配置如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 所有在 package.json 里面依赖的包，都会被打包进 vendor.js 这个文件中。</span></span><br><span class="line"><span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">  name: <span class="string">&#x27;vendor&#x27;</span>,</span><br><span class="line">  minChunks: <span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">module</span>, count</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="built_in">module</span>.resource &amp;&amp;</span><br><span class="line">      /\.js$/.test(<span class="built_in">module</span>.resource) &amp;&amp;</span><br><span class="line">      <span class="built_in">module</span>.resource.indexOf(</span><br><span class="line">        path.join(__dirname, <span class="string">&#x27;../node_modules&#x27;</span>)</span><br><span class="line">      ) === <span class="number">0</span></span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;),</span><br><span class="line"><span class="comment">// 抽取出代码模块的映射关系</span></span><br><span class="line"><span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">  name: <span class="string">&#x27;manifest&#x27;</span>,</span><br><span class="line">  chunks: [<span class="string">&#x27;vendor&#x27;</span>]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-模板预编译"><a href="#4-模板预编译" class="headerlink" title="4.模板预编译"></a><strong>4.模板预编译</strong></h3><p>当使用 DOM 内模板或 JavaScript 内的字符串模板时，模板会在运行时被编译为渲染函数。通常情况下这个过程已经足够快了，但对性能敏感的应用还是最好避免这种用法。</p>
+<p>预编译模板最简单的方式就是使用单文件组件——相关的构建设置会自动把预编译处理好，所以构建好的代码已经包含了编译出来的渲染函数而不是原始的模板字符串。</p>
+<p>如果你使用 webpack，并且喜欢分离 JavaScript 和模板文件，你可以使用 vue-template-loader，它也可以在构建过程中把模板文件转换成为 JavaScript 渲染函数。</p>
+<h3 id="5-提取组件的-CSS"><a href="#5-提取组件的-CSS" class="headerlink" title="5.提取组件的 CSS"></a><strong>5.提取组件的 CSS</strong></h3><p>当使用单文件组件时，组件内的 CSS 会以 style 标签的方式通过 JavaScript 动态注入。这有一些小小的运行时开销，如果你使用服务端渲染，这会导致一段 “无样式内容闪烁 (fouc) ” 。</p>
+<p>将所有组件的 CSS 提取到同一个文件可以避免这个问题，也会让 CSS 更好地进行压缩和缓存。</p>
+<h3 id="6-优化-SourceMap"><a href="#6-优化-SourceMap" class="headerlink" title="6.优化 SourceMap"></a><strong>6.优化 SourceMap</strong></h3><p>我们在项目进行打包后，会将开发中的多个文件代码打包到一个文件中，并且经过压缩、去掉多余的空格、babel编译化后，最终将编译得到的代码会用于线上环境，那么这样处理后的代码和源代码会有很大的差别，</p>
+<p>当有 bug的时候，我们只能定位到压缩处理后的代码位置，无法定位到开发环境中的代码，对于开发来说不好调式定位问题，因此 sourceMap 出现了，它就是为了解决不好调式代码问题的。</p>
+<p>SourceMap 的可选值如下（+ 号越多，代表速度越快，- 号越多，代表速度越慢, o 代表中等速度 ）</p>
+<p><img src="/images/yy.png" alt="SourceMap"></p>
+<p>开发环境推荐：cheap-module-eval-source-map</p>
+<p>生产环境推荐：cheap-module-source-map</p>
+<p>原因如下：</p>
+<blockquote>
+<p>cheap：源代码中的列信息是没有任何作用，因此我们打包后的文件不希望包含列相关信息，只有行信息能建立打包前后的依赖关系。因此不管是开发环境或生产环境，我们都希望添加 cheap 的基本类型来忽略打包前后的列信息；</p>
+</blockquote>
+<blockquote>
+<p>module ：不管是开发环境还是正式环境，我们都希望能定位到bug的源代码具体的位置，比如说某个 Vue 文件报错了，我们希望能定位到具体的 Vue 文件，因此我们也需要 module 配置；</p>
+</blockquote>
+<blockquote>
+<p>soure-map ：source-map 会为每一个打包后的模块生成独立的 soucemap 文件 ，因此我们需要增加source-map 属性；</p>
+</blockquote>
+<blockquote>
+<p>eval-source-map：eval 打包代码的速度非常快，因为它不生成 map 文件，但是可以对 eval 组合使用 eval-source-map 使用会将 map 文件以 DataURL 的形式存在打包后的 js 文件中。在正式环境中不要使用 eval-source-map, 因为它会增加文件的大小，但是在开发环境中，可以试用下，因为他们打包的速度很快。</p>
+</blockquote>
+<h3 id="7-构建结果输出分析"><a href="#7-构建结果输出分析" class="headerlink" title="7.构建结果输出分析"></a><strong>7.构建结果输出分析</strong></h3><p>Webpack 输出的代码可读性非常差而且文件非常大，让我们非常头疼。</p>
+<p>为了更简单、直观地分析输出结果，社区中出现了许多可视化分析工具。这些工具以图形的方式将结果更直观地展示出来，让我们快速了解问题所在。</p>
+<p>接下来讲解我们在 Vue 项目中用到的分析工具：webpack-bundle-analyzer 。</p>
+<p>我们在项目中 webpack.prod.conf.js 进行配置：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (config.build.bundleAnalyzerReport) &#123;</span><br><span class="line">  <span class="keyword">var</span> BundleAnalyzerPlugin =   <span class="built_in">require</span>(<span class="string">&#x27;webpack-bundle-analyzer&#x27;</span>).BundleAnalyzerPlugin;</span><br><span class="line">  webpackConfig.plugins.push(<span class="keyword">new</span> BundleAnalyzerPlugin());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行 $ npm run build --report 后生成分析报告：</p>
+<h3 id="8-Vue-项目的编译优化"><a href="#8-Vue-项目的编译优化" class="headerlink" title="8.Vue 项目的编译优化"></a><strong>8.Vue 项目的编译优化</strong></h3><p>如果你的 Vue 项目使用 Webpack 编译，需要你喝一杯咖啡的时间，那么也许你需要对项目的 Webpack 配置进行优化，提高 Webpack 的构建效率。</p>
+<h2 id="Vue-代码层面的优化"><a href="#Vue-代码层面的优化" class="headerlink" title="Vue 代码层面的优化"></a><strong>Vue 代码层面的优化</strong></h2><h3 id="1-v-if-和-v-show-区分使用场景"><a href="#1-v-if-和-v-show-区分使用场景" class="headerlink" title="1.v-if 和 v-show 区分使用场景"></a><strong>1.v-if 和 v-show 区分使用场景</strong></h3><h3 id="2-computed-和-watch-区分使用场景"><a href="#2-computed-和-watch-区分使用场景" class="headerlink" title="2.computed 和 watch 区分使用场景"></a><strong>2.computed 和 watch 区分使用场景</strong></h3><p>computed：是计算属性，依赖其它属性值，并且computed的值有缓存，只有它依赖的属性值发生改变，下一次获取computed的值时才会重新计算computed的值；</p>
+<p>watch： 更多的是「观察」的作用，类似于某些数据的监听回调 ，每当监听的数据变化时都会执行回调进行后续操作；</p>
+<p>运用场景：</p>
+<blockquote>
+<p>当我们需要进行数值计算，并且依赖于其它数据时，应该使用 computed，因为可以利用 computed 的缓存特性，避免每次获取值时，都要重新计算；<br>当我们需要在数据变化时执行异步或开销较大的操作时，应该使用 watch，使用 watch 选项允许我们执行异步操作 ( 访问一个 API )，限制我们执行该操作的频率，并在我们得到最终结果前，设置中间状态。这些都是计算属性无法做到的。</p>
+</blockquote>
+<h3 id="3-v-for-遍历必须为-item-添加-key，且避免同时使用-v-if"><a href="#3-v-for-遍历必须为-item-添加-key，且避免同时使用-v-if" class="headerlink" title="3.v-for 遍历必须为 item 添加 key，且避免同时使用 v-if"></a><strong>3.v-for 遍历必须为 item 添加 key，且避免同时使用 v-if</strong></h3><ol>
+<li><p>v-for 遍历必须为 item 添加 key<br>在列表数据进行遍历渲染时，需要为每一项 item 设置唯一 key 值，方便 Vue.js 内部机制精准找到该条列表数据。当 state 更新时，新的状态值和旧的状态值对比，较快地定位到 diff 。</p>
+</li>
+<li><p>v-for 遍历避免同时使用 v-if<br>v-for 比 v-if 优先级高，如果每一次都需要遍历整个数组，将会影响速度，尤其是当之需要渲染很小一部分的时候，必要情况下应该替换成 computed 属性。</p>
+</li>
+</ol>
+<h3 id="4-路由懒加载"><a href="#4-路由懒加载" class="headerlink" title="4.路由懒加载"></a><strong>4.路由懒加载</strong></h3><p>Vue 是单页面应用，可能会有很多的路由引入 ，这样使用 webpcak 打包后的文件很大，当进入首页时，加载的资源过多，页面会出现白屏的情况，不利于用户体验。</p>
+<p>如果我们能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应的组件，这样就更加高效了。这样会大大提高首屏显示的速度，但是可能其他的页面的速度就会降下来。</p>
+<h3 id="5-第三方插件的按需引入"><a href="#5-第三方插件的按需引入" class="headerlink" title="5.第三方插件的按需引入"></a><strong>5.第三方插件的按需引入</strong></h3><p>我们在项目中经常会需要引入第三方插件，如果我们直接引入整个插件，会导致项目的体积太大，我们可以借助 babel-plugin-component ，然后可以只引入需要的组件，以达到减小项目体积的目的。以下为项目中引入 element-ui 组件库为例：</p>
+<ol>
+<li><p>首先，安装 babel-plugin-component ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-plugin-component -D</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后，将 .babelrc 修改为：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;presets&quot;</span>: [[<span class="string">&quot;es2015&quot;</span>, &#123; <span class="attr">&quot;modules&quot;</span>: <span class="literal">false</span> &#125;]],</span><br><span class="line">  <span class="attr">&quot;plugins&quot;</span>: [</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;component&quot;</span>,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;libraryName&quot;</span>: <span class="string">&quot;element-ui&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;styleLibraryName&quot;</span>: <span class="string">&quot;theme-chalk&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>3.在 main.js 中引入部分组件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; Button, Select &#125; <span class="keyword">from</span> <span class="string">&#x27;element-ui&#x27;</span>;</span><br><span class="line"></span><br><span class="line">Vue.use(Button)</span><br><span class="line">Vue.use(Select)</span><br></pre></td></tr></table></figure></div></article></div><div class="right-container"><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2021/03/23/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%8B%9Fv-model/" title="自定义指令模拟v-model" class="prev">PREV</a><a href="/2021/03/17/%E5%89%8D%E7%AB%AF%E5%B8%B8%E8%A7%81%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" title="前端常见跨域解决方案" class="next">NEXT</a></div><a href="#comment" class="comment-anchor"></a><div id="vcomments"></div><script>new Valine({
+    el: "#vcomments",
+    appId: "aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz",
+    appKey: "FdzS5SOPHdhYQoEUngQ8K2QW",
+    notify: false,
+    verify: false,
+    avatar: "robohash",
+    visitor: true,
+    placeholder: "随便说点什么～.～",
+});</script><div class="copyright"><p>© 2016 - 2021 <a target="_blank">J.K</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p><p> <span style="padding-right: 6px;">闽ICP备16007301号-2</span></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/jquery-1.8.2.min.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/articleCatalog.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>const valineAPI = (() => {
+try {
+    AV.init("aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz", "FdzS5SOPHdhYQoEUngQ8K2QW");
+} catch(error) {}
+const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+    query.equalTo("identity", identity);
+    query.find().then(results => {
+        resolve(results.length > 0);
+    }, error => reject(error));
+    })
+}
+
+const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+    let querys = [];
+    for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+    }
+    query = AV.Query.or.apply(null ,querys);
+    } else {
+    identity = identity || getRealPath();
+    query = new AV.Query("Timer");
+    query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+    query.find()
+    .then(results => resolve(results))
+    .catch(error => reject(error))
+    })
+}
+
+const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let Todo = AV.Object.extend('Timer');
+    let todo = new Todo();
+    todo.set("times", 1);
+    todo.set("identity", identity);
+    todo.save().then(res => resolve(true), error => reject(error));
+    })
+}
+
+const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let query = new AV.Query('Timer');
+    query.equalTo("identity", identity);
+    query.find().then(todos => {
+        todos.forEach(todo => {
+        todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+    }).then(todos => resolve(true), error => reject(error));
+    })
+}
+
+return {
+    isExist,
+    _get,
+    update,
+    create
+}
+})()
+
+const calcAndWriteTimes = () => {
+let isPost = true;
+
+let timerAllDOM = document.querySelectorAll(".article-timer");
+
+if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+    if(exist) {
+        return valineAPI.update(identity);
+    }
+    return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+}
+
+let timerDOMCache = {};
+
+for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+    timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+    timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+    };
+    }
+}
+
+let identities = Object.keys(timerDOMCache);
+valineAPI._get(identities).then(results => {
+    for(let result of results) {
+    let {identity, times} = result.attributes;
+    timerDOMCache[identity].times = times;
+    timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+    if(timerDOMCache[identity].times){
+        continue;
+    }
+    timerDOMCache[identity].dom.map(item => item.innerText = 1);
+    valineAPI.create(identity);
+    }
+}).catch(error => console.log(error.message))
+}
+
+if(true){
+calcAndWriteTimes();
+}</script></body></html>

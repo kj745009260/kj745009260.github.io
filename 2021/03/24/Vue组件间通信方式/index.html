@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> Vue组件间通信方式 · 前端Store</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Vue组件间通信方式 - J.K"><meta name="keywords"><meta name="author" content="J.K"><link rel="short icon" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/favicon.ico"><link rel="stylesheet" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="前端Store"><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="前端Store" type="application/atom+xml">
+</head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/logo.png"></a><ul id="nav_list" class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/categories/live/" target="_self" data-hover="生活" class="nav-list-link">生活</a></li><li class="nav-list-item"><a href="/categories/read/" target="_self" data-hover="读书" class="nav-list-link">读书</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div><div id="nav_btn" class="nav-btn"><span></span><span></span><span></span></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">Vue组件间通信方式</h1><div class="post-info">2021-03-24<p class="visit"><i data-identity="2021/03/24/Vue组件间通信方式/" class="article-timer"></i><span>次访问</span></p></div><div class="post-content"><h2 id="组件间通信的分类"><a href="#组件间通信的分类" class="headerlink" title="组件间通信的分类"></a><strong>组件间通信的分类</strong></h2><blockquote>
+<ul>
+<li>父子组件之间的通信</li>
+<li>兄弟组件之间的通信</li>
+<li>祖孙与后代组件之间的通信</li>
+<li>非关系组件间之间的通信</li>
+</ul>
+</blockquote>
+<h2 id="组件间通信的方案"><a href="#组件间通信的方案" class="headerlink" title="组件间通信的方案"></a><strong>组件间通信的方案</strong></h2><p>整理vue中8种常规的通信方案</p>
+<blockquote>
+<ol>
+<li>通过 props 传递</li>
+<li>通过 $emit 触发自定义事件</li>
+<li>使用 ref</li>
+<li>EventBus</li>
+<li>parent 或 root</li>
+<li>attrs 与 listeners</li>
+<li>Provide 与 Inject</li>
+<li>Vuex</li>
+</ol>
+</blockquote>
+<h3 id="1-props传递数据"><a href="#1-props传递数据" class="headerlink" title="1.props传递数据"></a><strong>1.props传递数据</strong></h3><blockquote>
+<ul>
+<li>适用场景：父组件传递数据给子组件</li>
+<li>子组件设置props属性，定义接收父组件传递过来的参数</li>
+<li>父组件在使用子组件标签中通过字面量来传递值</li>
+</ul>
+</blockquote>
+<p>Children.vue组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">props:&#123;</span><br><span class="line">  <span class="comment">// 字符串形式</span></span><br><span class="line">  name:<span class="built_in">String</span> <span class="comment">// 接收的类型参数</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 对象形式</span></span><br><span class="line">  age:&#123;  </span><br><span class="line">    type:<span class="built_in">Number</span>, <span class="comment">// 接收的类型为数值</span></span><br><span class="line">    defaule:<span class="number">18</span>,  <span class="comment">// 默认值为18</span></span><br><span class="line">    <span class="built_in">require</span>:<span class="literal">true</span> <span class="comment">// age属性必须传递</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Father.vue组件</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Children</span> <span class="attr">name</span>=<span class="string">&quot;jack&quot;</span> <span class="attr">age</span>=<span class="string">18</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-emit-触发自定义事件"><a href="#2-emit-触发自定义事件" class="headerlink" title="2.$emit 触发自定义事件"></a><strong>2.$emit 触发自定义事件</strong></h3><blockquote>
+<ul>
+<li>适用场景：子组件传递数据给父组件</li>
+<li>子组件通过$emit触发自定义事件，$emit第二个参数为传递的数值</li>
+<li>父组件绑定监听器获取到子组件传递过来的参数</li>
+</ul>
+</blockquote>
+<p>Children.vue组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$emit(<span class="string">&#x27;add&#x27;</span>, good)</span><br></pre></td></tr></table></figure>
+
+<p>Father.vue组件</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Children</span> @<span class="attr">add</span>=<span class="string">&quot;cartAdd($event)&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-ref"><a href="#3-ref" class="headerlink" title="3.ref"></a><strong>3.ref</strong></h3><blockquote>
+<ul>
+<li>父组件在使用子组件的时候设置ref</li>
+<li>父组件通过设置子组件ref来获取数据</li>
+</ul>
+</blockquote>
+<p>父组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Children ref=<span class="string">&quot;foo&quot;</span> /&gt;</span><br><span class="line"></span><br><span class="line"><span class="built_in">this</span>.$refs.foo  <span class="comment">// 获取子组件实例，通过子组件实例我们就能拿到对应的数据</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-EventBus"><a href="#4-EventBus" class="headerlink" title="4.EventBus"></a><strong>4.EventBus</strong></h3><blockquote>
+<ul>
+<li>使用场景：兄弟组件传值</li>
+<li>创建一个中央时间总线EventBus</li>
+<li>兄弟组件通过$emit触发自定义事件，$emit第二个参数为传递的数值</li>
+<li>另一个兄弟组件通过$on监听自定义事件</li>
+</ul>
+</blockquote>
+<p>Bus.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> vm = <span class="keyword">new</span> Vue()</span><br><span class="line">vm.$on(<span class="string">&#x27;listener&#x27;</span>, callback)</span><br><span class="line">vm.$emit(<span class="string">&#x27;listener&#x27;</span>, data)</span><br><span class="line">vm.$off(<span class="string">&#x27;listener&#x27;</span>, callback)</span><br></pre></td></tr></table></figure>
+
+<p>自定义Bus.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bus</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 存放事件的名字</span></span><br><span class="line">    <span class="built_in">this</span>.callbacks = &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  $on(name, fn) &#123;</span><br><span class="line">    <span class="built_in">this</span>.callbacks[name] = <span class="built_in">this</span>.callbacks[name] || []</span><br><span class="line">    <span class="built_in">this</span>.callbacks[name].push(fn)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  $emit(name, args) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.callbacks[name]) &#123;</span><br><span class="line">      <span class="built_in">this</span>.callbacks[name].forEach(<span class="function"><span class="params">cb</span> =&gt;</span> cb(args));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  $off(name, fn) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.callbacks[name]) &#123;</span><br><span class="line">      <span class="keyword">let</span> delIndex = <span class="built_in">this</span>.callbacks[name].indexOf(fn)</span><br><span class="line">      <span class="built_in">this</span>.callbacks[name].splice(delIndex, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-parent或root"><a href="#5-parent或root" class="headerlink" title="5.parent或root"></a><strong>5.parent或root</strong></h3><p>通过共同祖辈$parent或者$root搭建通信侨联</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 兄弟组件</span></span><br><span class="line"><span class="built_in">this</span>.$parent.on(<span class="string">&#x27;add&#x27;</span>,<span class="built_in">this</span>.add)</span><br><span class="line"><span class="comment">// 另一个兄弟组件</span></span><br><span class="line"><span class="built_in">this</span>.$parent.emit(<span class="string">&#x27;add&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者直接通过$parent.$refs访问另一个兄弟组件</span></span><br><span class="line"><span class="built_in">this</span>.$parent.$refs.foo</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="6-attrs与listeners"><a href="#6-attrs与listeners" class="headerlink" title="6.attrs与listeners"></a><strong>6.attrs与listeners</strong></h3><blockquote>
+<ul>
+<li>适用场景：祖先传递数据给子孙</li>
+<li>设置批量向下传属性$attrs和 $listeners</li>
+<li>包含了父级作用域中不作为 prop 被识别 (且获取) 的特性绑定 ( class 和 style 除外)。</li>
+<li>可以通过 v-bind=”$attrs” 传⼊内部组件</li>
+</ul>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- child组件：并未在props中声明foo --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123;$attrs.foo&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- parent组件 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">HelloWorld</span> <span class="attr">foo</span>=<span class="string">&quot;foo&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 给Grandson隔代传值 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Child</span> <span class="attr">msg</span>=<span class="string">&quot;lalala&quot;</span> @<span class="attr">some-event</span>=<span class="string">&quot;onSomeEvent&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">Child</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 在Child组件中引用Grandson组件时直接做展开 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Grandson</span> <span class="attr">v-bind</span>=<span class="string">&quot;$attrs&quot;</span> <span class="attr">v-on</span>=<span class="string">&quot;$listeners&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">Grandson</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Grandson使⽤ --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> @<span class="attr">click</span>=<span class="string">&quot;$emit(&#x27;some-event&#x27;, &#x27;msg from grandson&#x27;)&quot;</span>&gt;</span></span><br><span class="line">&#123;&#123;msg&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-provide-与-inject"><a href="#7-provide-与-inject" class="headerlink" title="7.provide 与 inject"></a><strong>7.provide 与 inject</strong></h3><blockquote>
+<ul>
+<li>在祖先组件定义provide属性，返回传递的值</li>
+<li>在后代组件通过inject接收组件传递过来的值</li>
+</ul>
+</blockquote>
+<p>祖先组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">provide</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    foo:<span class="string">&#x27;foo&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>后代组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inject:[<span class="string">&#x27;foo&#x27;</span>] <span class="comment">// 获取到祖先组件传递过来的值</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><strong>小结</strong></h2><blockquote>
+<ul>
+<li>父子关系的组件数据传递选择 props  与 $emit进行传递，也可选择ref</li>
+<li>兄弟关系的组件数据传递可选择$bus，其次可以选择$parent进行传递</li>
+<li>祖先与后代组件数据传递可选择attrs与listeners或者 Provide与 Inject</li>
+<li>复杂关系的组件数据传递可以通过vuex存放共享的变量</li>
+</ul>
+</blockquote>
+</div></article></div><div class="right-container"><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2021/03/25/%E6%8F%90%E5%8D%87webpack%E6%89%93%E5%8C%85%E9%80%9F%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95/" title="提升webpack打包速度的方法" class="prev">PREV</a><a href="/2021/03/23/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%8B%9Fv-model/" title="自定义指令模拟v-model" class="next">NEXT</a></div><a href="#comment" class="comment-anchor"></a><div id="vcomments"></div><script>new Valine({
+    el: "#vcomments",
+    appId: "aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz",
+    appKey: "FdzS5SOPHdhYQoEUngQ8K2QW",
+    notify: false,
+    verify: false,
+    avatar: "robohash",
+    visitor: true,
+    placeholder: "随便说点什么～.～",
+});</script><div class="copyright"><p>© 2016 - 2021 <a target="_blank">J.K</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p><p> <span style="padding-right: 6px;">闽ICP备16007301号-2</span></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/jquery-1.8.2.min.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/articleCatalog.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>const valineAPI = (() => {
+try {
+    AV.init("aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz", "FdzS5SOPHdhYQoEUngQ8K2QW");
+} catch(error) {}
+const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+    query.equalTo("identity", identity);
+    query.find().then(results => {
+        resolve(results.length > 0);
+    }, error => reject(error));
+    })
+}
+
+const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+    let querys = [];
+    for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+    }
+    query = AV.Query.or.apply(null ,querys);
+    } else {
+    identity = identity || getRealPath();
+    query = new AV.Query("Timer");
+    query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+    query.find()
+    .then(results => resolve(results))
+    .catch(error => reject(error))
+    })
+}
+
+const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let Todo = AV.Object.extend('Timer');
+    let todo = new Todo();
+    todo.set("times", 1);
+    todo.set("identity", identity);
+    todo.save().then(res => resolve(true), error => reject(error));
+    })
+}
+
+const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let query = new AV.Query('Timer');
+    query.equalTo("identity", identity);
+    query.find().then(todos => {
+        todos.forEach(todo => {
+        todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+    }).then(todos => resolve(true), error => reject(error));
+    })
+}
+
+return {
+    isExist,
+    _get,
+    update,
+    create
+}
+})()
+
+const calcAndWriteTimes = () => {
+let isPost = true;
+
+let timerAllDOM = document.querySelectorAll(".article-timer");
+
+if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+    if(exist) {
+        return valineAPI.update(identity);
+    }
+    return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+}
+
+let timerDOMCache = {};
+
+for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+    timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+    timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+    };
+    }
+}
+
+let identities = Object.keys(timerDOMCache);
+valineAPI._get(identities).then(results => {
+    for(let result of results) {
+    let {identity, times} = result.attributes;
+    timerDOMCache[identity].times = times;
+    timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+    if(timerDOMCache[identity].times){
+        continue;
+    }
+    timerDOMCache[identity].dom.map(item => item.innerText = 1);
+    valineAPI.create(identity);
+    }
+}).catch(error => console.log(error.message))
+}
+
+if(true){
+calcAndWriteTimes();
+}</script></body></html>

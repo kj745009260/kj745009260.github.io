@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> javascript继承总结 · 前端Store</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="javascript继承总结 - J.K"><meta name="keywords"><meta name="author" content="J.K"><link rel="short icon" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/favicon.ico"><link rel="stylesheet" href="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="前端Store"><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="前端Store" type="application/atom+xml">
+</head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/logo.png"></a><ul id="nav_list" class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/categories/live/" target="_self" data-hover="生活" class="nav-list-link">生活</a></li><li class="nav-list-item"><a href="/categories/read/" target="_self" data-hover="读书" class="nav-list-link">读书</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div><div id="nav_btn" class="nav-btn"><span></span><span></span><span></span></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">javascript继承总结</h1><div class="post-info">2020-10-13<p class="visit"><i data-identity="2020/10/13/javascript继承总结/" class="article-timer"></i><span>次访问</span></p></div><div class="post-content"><h2 id="es6中的继承"><a href="#es6中的继承" class="headerlink" title="es6中的继承"></a><strong>es6中的继承</strong></h2><p>es6中的继承很简单，使用extends关键字就可以实现</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 父类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">name</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.name = name</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">sayName</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子类继承</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Children</span> <span class="keyword">extends</span> <span class="title">Parent</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> creatChildren = <span class="keyword">new</span> Children(<span class="string">&#x27;kite&#x27;</span>)</span><br><span class="line"></span><br><span class="line">creatChildren.sayName() 会输出 kite</span><br></pre></td></tr></table></figure>
+
+<h2 id="es5中的继承"><a href="#es5中的继承" class="headerlink" title="es5中的继承"></a><strong>es5中的继承</strong></h2><h3 id="1-原型继承。继承父类模版和原型对象"><a href="#1-原型继承。继承父类模版和原型对象" class="headerlink" title="1.原型继承。继承父类模版和原型对象"></a><strong>1.原型继承。继承父类模版和原型对象</strong></h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.name = name</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Parent.prototype = &#123;</span><br><span class="line">  <span class="title">constructor</span>: <span class="title">Parent</span>,</span><br><span class="line">  <span class="title">sayName</span>: <span class="title">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Children</span> (<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把父类的实例复制给子类的原型</span></span><br><span class="line">Children.prototype = <span class="keyword">new</span> Parent(<span class="string">&#x27;kite&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> createChildren = <span class="keyword">new</span> Children()</span><br><span class="line"></span><br><span class="line">createChildren.sayName() 会输出 kite</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-类继承。只继承父类模版-不继承父类原型对象"><a href="#2-类继承。只继承父类模版-不继承父类原型对象" class="headerlink" title="2.类继承。只继承父类模版,不继承父类原型对象"></a><strong>2.类继承。只继承父类模版,不继承父类原型对象</strong></h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.name = name</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Parent.prototype = &#123;</span><br><span class="line">  <span class="title">constructor</span>: <span class="title">Parent</span>,</span><br><span class="line">  <span class="title">sayName</span>: <span class="title">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Children</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  Parent.call(<span class="built_in">this</span>, name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> createChildren = <span class="keyword">new</span> Children(<span class="string">&#x27;kite&#x27;</span>)</span><br><span class="line"></span><br><span class="line">createChildren.sayName() 会输出 kite</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-混合继承-推荐使用-缺点：子类继承了2次父类的模版"><a href="#3-混合继承-推荐使用-缺点：子类继承了2次父类的模版" class="headerlink" title="3.混合继承,推荐使用.缺点：子类继承了2次父类的模版"></a><strong>3.混合继承,推荐使用.缺点：子类继承了2次父类的模版</strong></h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.name = name</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Parent.prototype = &#123;</span><br><span class="line">  <span class="title">constructor</span>: <span class="title">Parent</span>,</span><br><span class="line">  <span class="title">sayName</span>: <span class="title">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Children</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  Parent.call(<span class="built_in">this</span>, name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Children.prototype = <span class="keyword">new</span> Parent();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> createChildren = <span class="keyword">new</span> Children(<span class="string">&#x27;kite&#x27;</span>)</span><br><span class="line"></span><br><span class="line">createChildren.sayName() 会输出 kite</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-最佳继承。只继承一次父类模版和原型对象"><a href="#4-最佳继承。只继承一次父类模版和原型对象" class="headerlink" title="4.最佳继承。只继承一次父类模版和原型对象"></a><strong>4.最佳继承。只继承一次父类模版和原型对象</strong></h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.name = name</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Parent.prototype = &#123;</span><br><span class="line">  <span class="title">constructor</span>: <span class="title">Parent</span>,</span><br><span class="line">  <span class="title">sayName</span>: <span class="title">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Children</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  Parent.call(<span class="built_in">this</span>, name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">extendParent</span>(<span class="params">Parent, Children</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> F = <span class="keyword">new</span> <span class="built_in">Function</span>()</span><br><span class="line">  F.prototype = Parent.prototype</span><br><span class="line">  Children.prototype = <span class="keyword">new</span> F() <span class="comment">// 继承父类原型</span></span><br><span class="line">  Children.prototype.constructor = Children <span class="comment">// 还原子类构造器</span></span><br><span class="line">  <span class="keyword">if</span> (Parent.prototype.constructor === <span class="built_in">Object</span>.prototype.constructor) &#123;</span><br><span class="line">    Parent.prototype.constructor = Parent <span class="comment">// 还原父类构造器</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extendParent(Parent, Children)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> createChildren = <span class="keyword">new</span> Children(<span class="string">&#x27;kite&#x27;</span>)</span><br><span class="line"></span><br><span class="line">createChildren.sayName() 会输出 kite</span><br></pre></td></tr></table></figure>
+
+<h2 id="es5中new关键字干了啥"><a href="#es5中new关键字干了啥" class="headerlink" title="es5中new关键字干了啥"></a><strong>es5中new关键字干了啥</strong></h2><blockquote>
+<p>1.创建一个新对象，新对象的原型指向构造函数的原型</p>
+</blockquote>
+<blockquote>
+<p>2.将新对象赋值给构造函数的this, 并且执行构造函数内部的代码</p>
+</blockquote>
+<blockquote>
+<p>3.如果构造函数返回的是非空对象，则返回这个对象；否则返回新对象</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* @method new操作的实现 new命令的原理</span></span><br><span class="line"><span class="comment"> * @param constructor 构造函数</span></span><br><span class="line"><span class="comment"> * @param params 参数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_new</span>(<span class="params">constructor, params</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 取出入参中的constructor</span></span><br><span class="line">  <span class="keyword">var</span> <span class="title">constructor</span> = [].<span class="title">shift</span>.<span class="title">call</span>(<span class="params"><span class="built_in">arguments</span></span>)</span><br><span class="line"></span><br><span class="line">  // 创建一个新对象，新对象的原型指向构造函数的原型</span><br><span class="line">  <span class="title">var</span> <span class="title">context</span> = <span class="title">Object</span>.<span class="title">create</span>(<span class="params">constructor.prototype</span>)</span><br><span class="line">  </span><br><span class="line">  // 取出入参中的<span class="title">params</span></span><br><span class="line">  <span class="title">var</span> <span class="title">args</span> = [].<span class="title">slice</span>.<span class="title">call</span>(<span class="params"><span class="built_in">arguments</span></span>)</span><br><span class="line">  </span><br><span class="line">  // 将新对象赋值给构造函数的<span class="title">this</span>, 并且执行构造函数内部的代码</span><br><span class="line">  <span class="title">var</span> <span class="title">res</span> = <span class="title">constructor</span>.<span class="title">apply</span>(<span class="params">context, args</span>)</span><br><span class="line"></span><br><span class="line">  // 如果构造函数返回的是非空对象，则返回这个对象；否则返回新对象</span><br><span class="line">  <span class="title">return</span> (<span class="params"><span class="keyword">typeof</span> res === <span class="string">&#x27;object&#x27;</span> &amp;&amp; res !== <span class="literal">null</span></span>) ? <span class="title">res</span> : <span class="title">context</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div></article></div><div class="right-container"><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2020/10/14/Get%E8%AF%B7%E6%B1%82%E4%B8%8EPost%E8%AF%B7%E6%B1%82%E7%9A%84%E5%8C%BA%E5%88%AB/" title="Get请求与Post请求的区别" class="prev">PREV</a><a href="/2020/10/13/%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE%E5%9B%BE%E8%A7%A3/" title="作用域链图解" class="next">NEXT</a></div><a href="#comment" class="comment-anchor"></a><div id="vcomments"></div><script>new Valine({
+    el: "#vcomments",
+    appId: "aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz",
+    appKey: "FdzS5SOPHdhYQoEUngQ8K2QW",
+    notify: false,
+    verify: false,
+    avatar: "robohash",
+    visitor: true,
+    placeholder: "随便说点什么～.～",
+});</script><div class="copyright"><p>© 2016 - 2021 <a target="_blank">J.K</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p><p> <span style="padding-right: 6px;">闽ICP备16007301号-2</span></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/jquery-1.8.2.min.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/articleCatalog.js"></script><script src="https://bubuzou.oss-cn-shenzhen.aliyuncs.com/blog/202010/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script><script>const valineAPI = (() => {
+try {
+    AV.init("aD8jJBpu4oew3ovNY73z6Rdq-gzGzoHsz", "FdzS5SOPHdhYQoEUngQ8K2QW");
+} catch(error) {}
+const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+    query.equalTo("identity", identity);
+    query.find().then(results => {
+        resolve(results.length > 0);
+    }, error => reject(error));
+    })
+}
+
+const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+    let querys = [];
+    for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+    }
+    query = AV.Query.or.apply(null ,querys);
+    } else {
+    identity = identity || getRealPath();
+    query = new AV.Query("Timer");
+    query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+    query.find()
+    .then(results => resolve(results))
+    .catch(error => reject(error))
+    })
+}
+
+const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let Todo = AV.Object.extend('Timer');
+    let todo = new Todo();
+    todo.set("times", 1);
+    todo.set("identity", identity);
+    todo.save().then(res => resolve(true), error => reject(error));
+    })
+}
+
+const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+    let query = new AV.Query('Timer');
+    query.equalTo("identity", identity);
+    query.find().then(todos => {
+        todos.forEach(todo => {
+        todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+    }).then(todos => resolve(true), error => reject(error));
+    })
+}
+
+return {
+    isExist,
+    _get,
+    update,
+    create
+}
+})()
+
+const calcAndWriteTimes = () => {
+let isPost = true;
+
+let timerAllDOM = document.querySelectorAll(".article-timer");
+
+if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+    if(exist) {
+        return valineAPI.update(identity);
+    }
+    return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+}
+
+let timerDOMCache = {};
+
+for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+    timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+    timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+    };
+    }
+}
+
+let identities = Object.keys(timerDOMCache);
+valineAPI._get(identities).then(results => {
+    for(let result of results) {
+    let {identity, times} = result.attributes;
+    timerDOMCache[identity].times = times;
+    timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+    if(timerDOMCache[identity].times){
+        continue;
+    }
+    timerDOMCache[identity].dom.map(item => item.innerText = 1);
+    valineAPI.create(identity);
+    }
+}).catch(error => console.log(error.message))
+}
+
+if(true){
+calcAndWriteTimes();
+}</script></body></html>
